@@ -12,7 +12,9 @@
     }
   },
   "tasks": {
-    "dev": "deno run --watch --allow-all ./mod.ts"
+    "run": "deno run --watch -A ./mod.ts",
+    "test": "deno test -A ./src",
+    "test:watch": "deno test -A ./src --watch"
   },
   "fmt": {
     "options": {
