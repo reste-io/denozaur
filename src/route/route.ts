@@ -79,4 +79,13 @@ export class Route {
       { request, params: this.match(path) } as HandlerParams,
     );
   }
+
+  /**
+   * Method to get the path pattern as string.
+   *
+   * @returns the path of the route
+   */
+  public getPath(): string {
+    return this.config.path;
+  }
 }

@@ -66,6 +66,16 @@ Deno.test('The route', async (t: Deno.TestContext) => {
     assertEquals(
       route.handle('/1', { method: 'GET' } as Request),
       new Response('1-GET'),
+      'The route should match the method and return response',
     );
+  });
+
+  await t.step('should get path pattern as string', () => {
+    const route = new Route({
+      path: '/test/:id/:name',
+      handler: () => new Response(null),
+    });
+
+    assertEquals(route.getPath(), '/test/:id/:name', 'The path should match');
   });
 });
