@@ -33,4 +33,8 @@ Deno.test('The router', async (t: Deno.TestContext) => {
       'The route should match the path and method',
     );
   });
+
+  await t.step('should get all router paths', () => {
+    assertEquals(router.getPaths(), ['/', '/:id/test/:name'], 'The paths should match');
+  });
 });

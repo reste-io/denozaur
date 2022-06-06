@@ -35,4 +35,13 @@ export class Router {
 
     return [route, undefined];
   }
+
+  /**
+   * Method to get the all paths from router as string array.
+   *
+   * @returns paths in array.
+   */
+  public getPaths(): string[] {
+    return this.routing.map((route) => route.getPath());
+  }
 }
