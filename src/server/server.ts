@@ -12,6 +12,7 @@ export interface ServerConfig {
 }
 
 export type Callback<T, A = Response> = (options: T) => A | Promise<A>;
+
 export interface MiddlewareOptions {
   request: Request;
   router: Router;
