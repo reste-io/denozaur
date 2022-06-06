@@ -11,6 +11,7 @@ export interface ServerConfig {
   };
 }
 
+export type Callback<T, A = Response> = (options: T) => A | Promise<A>;
 export interface MiddlewareOptions {
   request: Request;
   router: Router;
@@ -21,13 +22,24 @@ export interface MiddlewareOptions {
  * If they return a undefined, it will be passed to the next middleware function.
  * If they return a value, it will block next middleware functions from being called and finish the request.
  */
-export type Middleware = (
-  options: MiddlewareOptions,
-) => Response | undefined | Promise<Response | undefined>;
+export type Middleware = Callback<
+  MiddlewareOptions,
+  Response | null
+>;
+
+export interface InterceptorOptions extends MiddlewareOptions {
+  response: Response;
+}
+
+/**
+ * A function that returns a middleware function used after the router has been called.
+ */
+export type Interceptor = Callback<InterceptorOptions>;
 
 export class Server {
   #denoServer: DenoServer;
   #middleware: Middleware[] = [];
+  #interceptors: Interceptor[] = [];
 
   constructor(private readonly config: ServerConfig) {
     this.#denoServer = new DenoServer({
@@ -51,8 +63,12 @@ export class Server {
     return this.#denoServer.close();
   }
 
-  public use(middleware: Middleware): void {
-    this.#middleware.push(middleware);
+  public use(...middleware: Middleware[]): void {
+    this.#middleware.push(...middleware);
+  }
+
+  public intercept(...interceptors: Interceptor[]): void {
+    this.#interceptors.push(...interceptors);
   }
 
   private async handlerManager(request: Request): Promise<Response> {
@@ -60,9 +76,15 @@ export class Server {
 
     if (middleware) return middleware;
 
-    if (this.isExtension(request)) return this.handleFile(request);
+    if (this.isExtension(request)) {
+      const response = await this.handleFile(request);
 
-    return await this.handleRoute(request);
+      return this.handleInterceptors(request, response);
+    }
+
+    const response = await this.handleRoute(request);
+
+    return this.handleInterceptors(request, response);
   }
 
   private async handleMiddleware(request: Request): Promise<Response | undefined> {
@@ -73,6 +95,16 @@ export class Server {
     }
 
     return undefined;
+  }
+
+  private async handleInterceptors(request: Request, _response: Response): Promise<Response> {
+    let response: Response = _response;
+
+    for await (const interceptor of this.#interceptors) {
+      response = await interceptor({ request, response, router: this.config.router });
+    }
+
+    return response;
   }
 
   private async handleRoute(request: Request): Promise<Response> {
