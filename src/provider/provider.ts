@@ -7,7 +7,7 @@ export interface BaseProviderConfig {
 }
 
 export interface ProviderEnvironment {
-  environment: string;
+  name: string;
   base: string;
 }
 
