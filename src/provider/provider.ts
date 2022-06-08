@@ -1,4 +1,4 @@
-export interface ProviderConfig {
+export interface BaseProviderConfig {
   base: string;
   fetch?: (
     input: Request | string,
@@ -7,10 +7,10 @@ export interface ProviderConfig {
 }
 
 export class BaseProvider {
-  protected config: Required<ProviderConfig>;
+  protected config: Required<BaseProviderConfig>;
   private interceptors: Array<(request: Request) => Request> = [];
 
-  constructor(config: ProviderConfig) {
+  constructor(config: BaseProviderConfig) {
     this.config = {
       ...config,
       fetch: config.fetch || fetch,

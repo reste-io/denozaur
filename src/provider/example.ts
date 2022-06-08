@@ -1,8 +1,8 @@
-import { BaseProvider, buildProvider, ProviderConfig } from './mod.ts';
+import { BaseProvider, BaseProviderConfig, buildProvider } from './mod.ts';
 
 // - usage on backend -
 export class Provider extends BaseProvider {
-  constructor(config?: ProviderConfig) {
+  constructor(config?: BaseProviderConfig) {
     super({ ...config, base: 'http://localhost:3000' });
   }
 
