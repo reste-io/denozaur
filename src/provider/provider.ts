@@ -1,14 +1,19 @@
 export interface BaseProviderConfig {
-  base: string;
+  environment: ProviderEnvironment;
   fetch?: (
     input: Request | string,
     init?: RequestInit,
   ) => Promise<Response>;
 }
 
+export interface ProviderEnvironment {
+  environment: string;
+  base: string;
+}
+
 export class BaseProvider {
   protected config: Required<BaseProviderConfig>;
-  private interceptors: Array<(request: Request) => Request> = [];
+  private interceptors: Array<(input: Request | string, init?: RequestInit) => Request> = [];
 
   constructor(config: BaseProviderConfig) {
     this.config = {
@@ -19,15 +24,21 @@ export class BaseProvider {
     if (!this.config.fetch) throw new Error('Provider requires fetch function');
   }
 
-  public intercept(callback: (request: Request) => Request): void {
+  public intercept(callback: (input: Request | string, init?: RequestInit) => Request): void {
     this.interceptors.push(callback);
   }
 
-  protected async fetch(request: Request): Promise<Response> {
+  protected async fetch(input: string, init?: RequestInit): Promise<Response> {
+    let request = new Request(this.config.environment.base + input);
+
     for await (const interceptor of this.interceptors) {
-      request = interceptor(request);
+      request = interceptor(request, init);
     }
 
-    return await this.config.fetch(request);
+    return await this.config.fetch(request, init);
+  }
+
+  protected getEnvironment(): ProviderEnvironment {
+    return this.config.environment;
   }
 }

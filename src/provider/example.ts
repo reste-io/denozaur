@@ -3,11 +3,17 @@ import { BaseProvider, BaseProviderConfig, buildProvider } from './mod.ts';
 // - usage on backend -
 export class Provider extends BaseProvider {
   constructor(config?: BaseProviderConfig) {
-    super({ ...config, base: 'http://localhost:3000' });
+    super({
+      ...config,
+      environment: {
+        base: 'https://example.com',
+        environment: 'production',
+      },
+    });
   }
 
   public async getData(): Promise<string> {
-    const response = await this.fetch(new Request('/data'));
+    const response = await this.fetch('/data');
 
     return await response.text();
   }
