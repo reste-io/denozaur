@@ -34,12 +34,6 @@ Work in progress.
 
 Description of the `server` module.
 
-### Fake Fetch
-
-Work in progress.
-
-Description of the `fake-fetch` module.
-
 ## Commits
 
 ```bash
