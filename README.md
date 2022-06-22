@@ -20,6 +20,15 @@ import { Router } from 'https://github.com/reste-io/denozaur/raw/main/src/router
 
 ## Utilities
 
+### Atlas
+
+Required to set run environment variables.
+
+- `ATLAS_URL` is the url of the Atlas instance.
+- `ATLAS_KEY` is the token to use to authenticate with the Atlas instance.
+- `ATLAS_DATA_SOURCE` is the name of the data source to use.
+- `ATLAS_DATABASE` is the name of the database to use.
+
 ### Route
 
 Description of the `route` module.
