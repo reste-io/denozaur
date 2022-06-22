@@ -31,12 +31,7 @@ export type AtlasResult<T> = {
 };
 
 export class Atlas {
-  private readonly config: AtlasConfig = {
-    ATLAS_DATABASE: Deno.env.get('ATLAS_DATABASE')!,
-    ATLAS_DATA_SOURCE: Deno.env.get('ATLAS_DATA_SOURCE')!,
-    ATLAS_URL: Deno.env.get('ATLAS_URL')!,
-    ATLAS_KEY: Deno.env.get('ATLAS_KEY')!,
-  };
+  constructor(private readonly config: AtlasConfig) {}
 
   private async fetch<T>(
     action: AtlasAction,
